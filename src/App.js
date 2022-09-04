@@ -1,24 +1,38 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from 'react';
+
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from 'react-router-dom';
+
+// CONTEXT
+
+// import { useFirebase } from './context/FirebaseContext';
+
+// COMPONENTS
+import PublicRoutes from '../src/routes/PublicRoutes';
+import PrivateRoutes from '../src/routes/PrivateRoutes';
+import { useAuth } from './context/AuthContext';
 
 function App() {
+  const [user, setUser] = useState();
+  useEffect(() => {
+    setUser(localStorage.getItem('users'));
+  }, []);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Routes>
+        {!user && (
+          <>
+            <Route path='/*' element={<Navigate to={'auth'} />} />
+            <Route path='auth/*' element={<PublicRoutes />} />
+          </>
+        )}
+        {user && <Route path='/*' element={<PrivateRoutes />} />}
+      </Routes>
+    </Router>
   );
 }
 
