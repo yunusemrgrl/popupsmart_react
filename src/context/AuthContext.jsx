@@ -23,20 +23,21 @@ export const AuthProvider = ({ children }) => {
 
   const register = async ({ email, password }) => {
     let isValid = true;
-    users.forEach((user) => {
+    await users.forEach((user) => {
       if (user.email === email) {
         return (isValid = false);
       }
       return true;
     });
     if (isValid) {
-      axios
+      await axios
         .post('https://630db812b37c364eb709dbdf.mockapi.io/users', {
           email,
           password,
         })
         .then(function (response) {
           localStorage.setItem('users', email);
+          localStorage.setItem('user_id', response.data.id);
           window.location.reload();
         })
         .catch(function (error) {
@@ -48,8 +49,9 @@ export const AuthProvider = ({ children }) => {
   };
   const login = async ({ email }) => {
     let isValid = false;
-    users.forEach((user) => {
+    await users.forEach((user) => {
       if (user.email === email) {
+        localStorage.setItem('user_id', user.id);
         return (isValid = true);
       }
       return false;
@@ -64,6 +66,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     localStorage.removeItem('users');
     window.location.reload();
+    localStorage.removeItem('user_id');
   };
 
   const value = {

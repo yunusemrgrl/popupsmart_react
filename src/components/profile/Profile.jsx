@@ -1,38 +1,46 @@
 import { Box, Button, Flex } from '@chakra-ui/react';
+import './profile.scss';
 
 // COMPONENTS
-
 import { useAuth } from '../../context/AuthContext';
-
+import TodoHeader from './TodoHeader';
+import TodoMain from './TodoMain';
+import TodoFooter from './TodoFooter';
 function Profile() {
   const { user, logout } = useAuth();
 
   return (
-    <div>
-      {user && (
-        <Flex
-          bg='gray.100'
-          direction='column'
-          align='center'
-          justify='center'
-          h='100vh'
-        >
-          <Box bg='white' p={6} rounded='md' w={64}>
-            User Email : {user}
-          </Box>
-          <Button
-            colorScheme='purple'
-            type='button'
-            mt={19}
-            onClick={() => {
-              logout();
-            }}
-          >
-            Logout
-          </Button>
+    <Flex flexDirection={'column'}>
+      <Box>
+        {user && (
+          <Flex px={4} align='top' justify='flex-end'>
+            <Flex
+              wordBreak={'break-all'}
+              p={6}
+              fontSize={20}
+              fontWeight={'semibold'}
+            >
+              {user}
+            </Flex>
+            <Button
+              colorScheme='purple'
+              type='button'
+              mt={19}
+              onClick={() => {
+                logout();
+              }}
+            >
+              Logout
+            </Button>
+          </Flex>
+        )}
+        <Flex direction={'column'} align={'center'}>
+          <TodoHeader />
+          <TodoMain />
         </Flex>
-      )}
-    </div>
+        <TodoFooter />
+      </Box>
+    </Flex>
   );
 }
 

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import './App.css';
 
 import {
   BrowserRouter as Router,
@@ -7,14 +8,9 @@ import {
   Navigate,
 } from 'react-router-dom';
 
-// CONTEXT
-
-// import { useFirebase } from './context/FirebaseContext';
-
 // COMPONENTS
 import PublicRoutes from '../src/routes/PublicRoutes';
 import PrivateRoutes from '../src/routes/PrivateRoutes';
-import { useAuth } from './context/AuthContext';
 
 function App() {
   const [user, setUser] = useState();
