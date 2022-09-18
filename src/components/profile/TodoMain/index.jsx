@@ -1,3 +1,4 @@
+import { message } from 'antd';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { TodoForm } from './TodoForm';
@@ -10,6 +11,12 @@ function TodoMain() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (todo.trim() === '' || todo.length < 4) {
+      return message.warning({
+        content: 'En az 3 harf içermelidir',
+        key: 'todos_validation',
+      });
+    }
     dispatch(addTodosAsync({ title: todo, class: category }));
     setTodo('');
   };

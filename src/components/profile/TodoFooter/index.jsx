@@ -1,4 +1,5 @@
 import { Box } from '@chakra-ui/react';
+import { message } from 'antd';
 import { useEffect, useRef, useState } from 'react';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { BiEditAlt } from 'react-icons/bi';
@@ -11,11 +12,7 @@ import {
   toggleTodosAsync,
   updateTodosAsync,
 } from '../../../redux/todos/services';
-import {
-  editTodo,
-  selectTodos,
-  updateTodo,
-} from '../../../redux/todos/todosSlice';
+import { editTodo, selectTodos } from '../../../redux/todos/todosSlice';
 function TodoFooter() {
   const inputRef = useRef();
   const dispatch = useDispatch();
@@ -96,11 +93,17 @@ function TodoFooter() {
   };
 
   const handleEditTodo = (todo, id) => {
-    console.log(id);
     setTitle(todo.title);
     dispatch(editTodo(todo, id));
   };
   const handleUpdateTodo = (action) => {
+    console.log(action.title.length < 3);
+    if (action.title.trim() === '' || action.title.length < 4) {
+      return message.warning({
+        content: 'En az 3 harf içermelidir',
+        key: 'todos_validationUpdate',
+      });
+    }
     dispatch(updateTodosAsync(action));
   };
 
