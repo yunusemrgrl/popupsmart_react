@@ -1,29 +1,31 @@
-import { Box, Text } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
 import { useEffect, useRef, useState } from 'react';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { BiEditAlt } from 'react-icons/bi';
 import { TiTick } from 'react-icons/ti';
 import { useDispatch, useSelector } from 'react-redux';
-import { getTodosAsyc } from '../../../redux/todos/services';
 import {
-  deleteTodo,
-  changeStatus,
-  clearCompleted,
+  clearCompletedTodosAsync,
+  deleteTodosAsync,
+  getTodosAsync,
+  toggleTodosAsync,
+  updateTodosAsync,
+} from '../../../redux/todos/services';
+import {
   editTodo,
+  selectTodos,
   updateTodo,
 } from '../../../redux/todos/todosSlice';
-
 function TodoFooter() {
   const inputRef = useRef();
   const dispatch = useDispatch();
-
   const [title, setTitle] = useState();
-  useEffect(() => {
-    dispatch(getTodosAsyc());
-  }, [dispatch]);
 
-  const todos = useSelector((state) => state.todos);
-  console.log(todos);
+  const todos = useSelector(selectTodos);
+
+  useEffect(() => {
+    dispatch(getTodosAsync());
+  }, [dispatch]);
 
   let yellowList = 0;
   let purpleList = 0;
@@ -39,13 +41,12 @@ function TodoFooter() {
 
   const items = useSelector((state) => {
     if (state.search === '') {
-      return state.todos;
+      return todos;
     }
     return state.todos.filter((todo) =>
       todo.title.toLowerCase().includes(state.search),
     );
   });
-
   items.forEach((todo) => {
     if (todo.class === 'yellow') {
       filteredYellow.push(todo);
@@ -75,21 +76,32 @@ function TodoFooter() {
     }
   });
 
-  const handleDelete = (id) => {
-    dispatch(deleteTodo(id));
+  const handleDelete = async (id) => {
+    await dispatch(deleteTodosAsync(id));
   };
-  const handleToggle = (id) => {
-    dispatch(changeStatus(id));
+
+  const handleToggle = (id, completed) => {
+    dispatch(toggleTodosAsync({ id, data: { completed } }));
   };
-  const handleClearCompleted = (color) => {
-    dispatch(clearCompleted(color));
+  const handleClearCompleted = async (color) => {
+    const activeTodos = [];
+    await todos.forEach((todo) => {
+      if (todo.class === color && todo.completed) {
+        return activeTodos.push(todo);
+      }
+    });
+    activeTodos.forEach((todo) => {
+      dispatch(clearCompletedTodosAsync(todo.id));
+    });
   };
+
   const handleEditTodo = (todo, id) => {
+    console.log(id);
     setTitle(todo.title);
     dispatch(editTodo(todo, id));
   };
-  const handleUpdateTodo = (title, id) => {
-    dispatch(updateTodo(title, id));
+  const handleUpdateTodo = (action) => {
+    dispatch(updateTodosAsync(action));
   };
 
   return (
@@ -105,7 +117,7 @@ function TodoFooter() {
                 <input
                   type='checkbox'
                   readOnly
-                  onClick={() => handleToggle(todo.id)}
+                  onClick={() => handleToggle(todo.id, !todo.completed)}
                   checked={todo.completed}
                 />
                 {todo.isEditing ? (
@@ -124,7 +136,11 @@ function TodoFooter() {
                   <TiTick
                     style={{ marginRight: 10, marginLeft: 10 }}
                     onClick={() => {
-                      handleUpdateTodo({ title: title, id: todo.id });
+                      handleUpdateTodo({
+                        todo: todo,
+                        title: title,
+                        id: todo.id,
+                      });
                     }}
                   />
                 ) : (
@@ -159,7 +175,7 @@ function TodoFooter() {
                 <input
                   type='checkbox'
                   readOnly
-                  onClick={() => handleToggle(todo.id)}
+                  onClick={() => handleToggle(todo.id, !todo.completed)}
                   checked={todo.completed}
                 />
                 {todo.isEditing ? (
@@ -213,7 +229,7 @@ function TodoFooter() {
                 <input
                   type='checkbox'
                   readOnly
-                  onClick={() => handleToggle(todo.id)}
+                  onClick={() => handleToggle(todo.id, !todo.completed)}
                   checked={todo.completed}
                 />
                 {todo.isEditing ? (
@@ -267,7 +283,7 @@ function TodoFooter() {
                 <input
                   type='checkbox'
                   readOnly
-                  onClick={() => handleToggle(todo.id)}
+                  onClick={() => handleToggle(todo.id, !todo.completed)}
                   checked={todo.completed}
                 />
                 {todo.isEditing ? (
@@ -321,7 +337,7 @@ function TodoFooter() {
                 <input
                   type='checkbox'
                   readOnly
-                  onClick={() => handleToggle(todo.id)}
+                  onClick={() => handleToggle(todo.id, !todo.completed)}
                   checked={todo.completed}
                 />
                 {todo.isEditing ? (

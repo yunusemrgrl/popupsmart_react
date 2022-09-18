@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { addTodo } from '../../../redux/todos/todosSlice';
 import { TodoForm } from './TodoForm';
-
+import { addTodosAsync } from '../../../redux/todos/services';
 function TodoMain() {
   const active = localStorage.getItem('class');
   const [todo, setTodo] = useState('');
@@ -11,7 +10,7 @@ function TodoMain() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(addTodo({ title: todo, class: category }));
+    dispatch(addTodosAsync({ title: todo, class: category }));
     setTodo('');
   };
   const handleChange = (activeList) => {

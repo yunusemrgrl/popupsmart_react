@@ -6,9 +6,11 @@ import { useAuth } from '../../context/AuthContext';
 import TodoHeader from './TodoHeader';
 import TodoMain from './TodoMain';
 import TodoFooter from './TodoFooter';
+import { selectTodos } from '../../redux/todos/todosSlice';
+import { useSelector } from 'react-redux';
 function Profile() {
   const { user, logout } = useAuth();
-
+  const todos = useSelector(selectTodos);
   return (
     <Flex flexDirection={'column'}>
       <Box>
@@ -38,7 +40,7 @@ function Profile() {
           <TodoHeader />
           <TodoMain />
         </Flex>
-        <TodoFooter />
+        <TodoFooter todos={todos} />
       </Box>
     </Flex>
   );

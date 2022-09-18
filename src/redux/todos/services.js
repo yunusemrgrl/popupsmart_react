@@ -1,62 +1,68 @@
 import axios from 'axios';
 
 import { createAsyncThunk } from '@reduxjs/toolkit';
+
 const user_id = localStorage.getItem('user_id');
-export const getTodosAsyc = createAsyncThunk(
+
+export const getTodosAsync = createAsyncThunk(
   'todos/getTodosAsync',
   async () => {
     const res = await axios.get(
       `https://630db812b37c364eb709dbdf.mockapi.io/users/${user_id}/todos`,
     );
-    console.log(res);
     return res.data;
   },
 );
 
-export const addTodosAsyc = createAsyncThunk(
+export const addTodosAsync = createAsyncThunk(
   'todos/addTodosAsync',
   async (data) => {
     const res = await axios.post(
-      `${process.env.REACT_APP_BASE_END_POINT}/todos`,
+      `https://630db812b37c364eb709dbdf.mockapi.io/users/${user_id}/todos`,
       data,
     );
     return res.data;
   },
 );
-export const toggleTodosAsyc = createAsyncThunk(
+export const toggleTodosAsync = createAsyncThunk(
   'todos/toggleTodosAsync',
   async ({ id, data }) => {
-    const res = await axios.patch(
-      `${process.env.REACT_APP_BASE_END_POINT}/todos/${id}`,
+    const res = await axios.put(
+      `https://630db812b37c364eb709dbdf.mockapi.io/users/${user_id}/todos/${id}`,
       data,
     );
     return res.data;
   },
 );
-export const setCompletedTodosAsyc = createAsyncThunk(
-  'todos/setCompletedTodosAsyc',
-  async ({ id, data }) => {
-    const res = await axios.patch(
-      `${process.env.REACT_APP_BASE_END_POINT}/todos/${id}`,
-      data,
-    );
-
-    return res.data;
-  },
-);
-export const deleteTodosAsyc = createAsyncThunk(
+export const deleteTodosAsync = createAsyncThunk(
   'todos/deleteTodosAsync',
   async (id) => {
-    await axios.delete(`${process.env.REACT_APP_BASE_END_POINT}/todos/${id}`);
+    console.log(id);
+    await axios.delete(
+      `https://630db812b37c364eb709dbdf.mockapi.io/users/${user_id}/todos/${id}`,
+    );
     return id;
   },
 );
-export const clearCompeletedTodosAsyc = createAsyncThunk(
-  'todos/deleteTodosAsync',
+export const clearCompletedTodosAsync = createAsyncThunk(
+  'todos/clearCompletedTodosAsync',
   async (id) => {
-    const res = await axios.delete(
-      `${process.env.REACT_APP_BASE_END_POINT}/todos/${id}`,
+    await axios.delete(
+      `https://630db812b37c364eb709dbdf.mockapi.io/users/${user_id}/todos/${id}`,
     );
-    return res.data;
+    return id;
+  },
+);
+export const updateTodosAsync = createAsyncThunk(
+  'todos/updateTodosAsync',
+  async (action) => {
+    const title = action.title;
+    const id = action.id;
+    const todo = action.todo;
+    await axios.put(
+      `https://630db812b37c364eb709dbdf.mockapi.io/users/${user_id}/todos/${id}`,
+      { ...todo, title: title, isEditing: false },
+    );
+    return { title, id };
   },
 );

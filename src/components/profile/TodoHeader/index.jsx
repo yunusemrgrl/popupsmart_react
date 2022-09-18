@@ -3,11 +3,10 @@ import { setSearch } from '../../../redux/todos/todosSlice';
 
 function TodoHeader() {
   const dispatch = useDispatch();
-
   const handleSearch = (e) => {
     dispatch(setSearch(e.target.value));
   };
-
+  
   return (
     <header className='header'>
       <div className='title'>NotesApp</div>
